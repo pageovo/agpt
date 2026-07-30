@@ -5,7 +5,7 @@ window.LEARNING_DATA = {
   lastUpdated: "2026-07-30",
 
   student: {
-    name: "林同学",
+    name: "杜同学",
     grade: "初二",
     subjects: ["数学", "物理"],
     goal: "本阶段重点：稳固一次函数与几何基础，养成写完后主动验算的习惯。",
