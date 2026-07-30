@@ -32,8 +32,8 @@ window.LEARNING_DATA = {
     {
       date: "2026-07-29",
       subject: "数学",
-      content: "none",
-      problem: "none",
+      content: "根与系数的关系",
+      problem: "公式不够熟练",
       progress: null,
       evaluation: "none",
     },
