@@ -2,7 +2,7 @@
   "use strict";
 
   const data = window.LEARNING_DATA;
-  if (!data || !Array.isArray(data.lessons)) {
+  if (!data || !data.student || !Array.isArray(data.lessons)) {
     document.body.innerHTML = "<p style='padding:24px'>数据文件读取失败，请检查 data.js。</p>";
     return;
   }
@@ -16,12 +16,14 @@
     updateTime: document.querySelector("#update-time"),
     studentAvatar: document.querySelector("#student-avatar"),
     studentTitle: document.querySelector("#student-title"),
-    studentMeta: document.querySelector("#student-meta"),
+    studentGrade: document.querySelector("#student-grade"),
+    studentSubjects: document.querySelector("#student-subjects"),
+    studentStart: document.querySelector("#student-start"),
     studentGoal: document.querySelector("#student-goal"),
+    studyDayCount: document.querySelector("#study-day-count"),
     lessonCount: document.querySelector("#lesson-count"),
     latestDate: document.querySelector("#latest-date"),
     averageProgress: document.querySelector("#average-progress"),
-    averageProgressBar: document.querySelector("#average-progress-bar"),
     searchInput: document.querySelector("#search-input"),
     subjectFilters: document.querySelector("#subject-filters"),
     resultCount: document.querySelector("#result-count"),
@@ -30,12 +32,15 @@
     footerName: document.querySelector("#footer-name"),
   };
 
-  const sortedLessons = [...data.lessons].sort(
-    (first, second) => new Date(second.date) - new Date(first.date),
-  );
+  const subjectOrder = new Map(data.student.subjects.map((subject, index) => [subject, index]));
+  const sortedLessons = [...data.lessons].sort((first, second) => {
+    const dateDifference = new Date(second.date) - new Date(first.date);
+    if (dateDifference !== 0) return dateDifference;
+    return (subjectOrder.get(first.subject) ?? 99) - (subjectOrder.get(second.subject) ?? 99);
+  });
 
   function escapeHtml(value) {
-    return String(value)
+    return String(value ?? "")
       .replaceAll("&", "&amp;")
       .replaceAll("<", "&lt;")
       .replaceAll(">", "&gt;")
@@ -43,8 +48,27 @@
       .replaceAll("'", "&#039;");
   }
 
-  function formatDate(dateString, includeYear = true) {
-    const date = new Date(`${dateString}T00:00:00`);
+  function isPending(value) {
+    return value === null || value === undefined || String(value).trim().toLowerCase() === "none" || String(value).trim() === "";
+  }
+
+  function getProgress(value) {
+    if (typeof value !== "number" || !Number.isFinite(value)) return null;
+    return Math.min(100, Math.max(0, value));
+  }
+
+  function displayValue(value) {
+    return isPending(value)
+      ? '<span class="pending-value">待填写</span>'
+      : escapeHtml(value);
+  }
+
+  function parseDate(dateString) {
+    return new Date(`${dateString}T00:00:00`);
+  }
+
+  function formatDate(dateString, includeYear = false) {
+    const date = parseDate(dateString);
     if (Number.isNaN(date.getTime())) return dateString;
     return new Intl.DateTimeFormat("zh-CN", {
       year: includeYear ? "numeric" : undefined,
@@ -54,35 +78,46 @@
   }
 
   function getWeekday(dateString) {
-    const date = new Date(`${dateString}T00:00:00`);
+    const date = parseDate(dateString);
     if (Number.isNaN(date.getTime())) return "";
     return new Intl.DateTimeFormat("zh-CN", { weekday: "long" }).format(date);
   }
 
+  function getGroupedLessons(lessons) {
+    return lessons.reduce((groups, lesson) => {
+      if (!groups.has(lesson.date)) groups.set(lesson.date, []);
+      groups.get(lesson.date).push(lesson);
+      return groups;
+    }, new Map());
+  }
+
   function initializeProfile() {
     const student = data.student;
-    const average = sortedLessons.length
-      ? Math.round(
-          sortedLessons.reduce((sum, lesson) => sum + Number(lesson.progress || 0), 0) /
-            sortedLessons.length,
-        )
-      : 0;
+    const uniqueDates = new Set(sortedLessons.map((lesson) => lesson.date));
+    const validProgress = sortedLessons
+      .map((lesson) => getProgress(lesson.progress))
+      .filter((progress) => progress !== null);
+    const average = validProgress.length
+      ? Math.round(validProgress.reduce((sum, progress) => sum + progress, 0) / validProgress.length)
+      : null;
 
     document.title = `${student.name} · 学习记录`;
-    elements.updateTime.textContent = `更新于 ${formatDate(data.lastUpdated, false)}`;
+    elements.updateTime.textContent = `更新于 ${formatDate(data.lastUpdated)}`;
     elements.studentAvatar.textContent = student.name.slice(0, 1);
     elements.studentTitle.textContent = student.name;
-    elements.studentMeta.textContent = `${student.grade} · ${student.subjects.join(" / ")}`;
+    elements.studentGrade.textContent = student.grade;
+    elements.studentSubjects.textContent = student.subjects.join(" · ");
+    elements.studentStart.textContent = `${formatDate(student.startDate)}开始`;
     elements.studentGoal.textContent = student.goal;
-    elements.lessonCount.innerHTML = `${sortedLessons.length}<small> 次</small>`;
-    elements.latestDate.textContent = sortedLessons.length ? formatDate(sortedLessons[0].date, false) : "暂无";
-    elements.averageProgress.innerHTML = `${average}<small>%</small>`;
-    elements.averageProgressBar.style.width = `${average}%`;
+    elements.studyDayCount.innerHTML = `${uniqueDates.size}<small> 天</small>`;
+    elements.lessonCount.innerHTML = `${sortedLessons.length}<small> 条</small>`;
+    elements.latestDate.textContent = sortedLessons.length ? formatDate(sortedLessons[0].date) : "暂无";
+    elements.averageProgress.innerHTML = average === null ? "待填写" : `${average}<small>%</small>`;
     elements.footerName.textContent = data.siteName;
   }
 
   function initializeFilters() {
-    const subjects = ["全部", ...new Set(sortedLessons.map((lesson) => lesson.subject))];
+    const subjects = ["全部", ...data.student.subjects];
     elements.subjectFilters.innerHTML = subjects
       .map(
         (subject) =>
@@ -116,34 +151,62 @@
     });
   }
 
-  function createRecordCard(lesson) {
-    const progress = Math.min(100, Math.max(0, Number(lesson.progress) || 0));
+  function createProgress(progressValue) {
+    const progress = getProgress(progressValue);
+    if (progress === null) {
+      return '<span class="pending-value">待填写</span>';
+    }
+
     return `
-      <article class="record-card">
-        <div class="record-date">
-          <strong>${escapeHtml(formatDate(lesson.date, false))}</strong>
-          <span>${escapeHtml(getWeekday(lesson.date))}</span>
-          <span class="subject-tag">${escapeHtml(lesson.subject)}</span>
+      <div class="record-progress-row">
+        <div class="progress-track" aria-hidden="true"><span style="width:${progress}%"></span></div>
+        <strong>${progress}%</strong>
+      </div>
+    `;
+  }
+
+  function createSubjectEntry(lesson) {
+    const subjectClass = lesson.subject === "物理" ? "subject-physics" : "subject-math";
+    return `
+      <section class="subject-entry ${subjectClass}" aria-label="${escapeHtml(lesson.subject)}课程记录">
+        <div class="subject-heading">
+          <span class="subject-name"><i aria-hidden="true"></i>${escapeHtml(lesson.subject)}</span>
+          <span class="entry-state">${isPending(lesson.content) ? "待完善" : "已记录"}</span>
         </div>
-        <div class="record-body">
-          <h3>${escapeHtml(lesson.content)}</h3>
-          <div class="record-details">
-            <div>
-              <span class="detail-label">主要问题</span>
-              <p class="detail-text">${escapeHtml(lesson.problem)}</p>
-            </div>
-            <div class="teacher-note">
-              <span class="detail-label">老师评价</span>
-              <p class="detail-text">${escapeHtml(lesson.evaluation)}</p>
-            </div>
-            <div>
-              <span class="detail-label">解决进度</span>
-              <div class="record-progress-row">
-                <div class="progress-track" aria-hidden="true"><span style="width:${progress}%"></span></div>
-                <strong>${progress}%</strong>
-              </div>
-            </div>
+        <div class="lesson-content">
+          <span class="detail-label">上课内容</span>
+          <h3>${displayValue(lesson.content)}</h3>
+        </div>
+        <div class="record-details">
+          <div>
+            <span class="detail-label">主要问题</span>
+            <p>${displayValue(lesson.problem)}</p>
           </div>
+          <div>
+            <span class="detail-label">解决进度</span>
+            ${createProgress(lesson.progress)}
+          </div>
+          <div class="teacher-note">
+            <span class="detail-label">老师评价</span>
+            <p>${displayValue(lesson.evaluation)}</p>
+          </div>
+        </div>
+      </section>
+    `;
+  }
+
+  function createDayCard(date, lessons) {
+    return `
+      <article class="day-card">
+        <header class="day-header">
+          <div class="date-day">${escapeHtml(parseDate(date).getDate())}</div>
+          <div>
+            <strong>${escapeHtml(formatDate(date))}</strong>
+            <span>${escapeHtml(getWeekday(date))}</span>
+          </div>
+        </header>
+        <div class="day-lessons">
+          ${lessons.map(createSubjectEntry).join("")}
         </div>
       </article>
     `;
@@ -151,8 +214,11 @@
 
   function renderRecords() {
     const lessons = getFilteredLessons();
-    elements.resultCount.textContent = `显示 ${lessons.length} 条记录`;
-    elements.recordList.innerHTML = lessons.map(createRecordCard).join("");
+    const groups = getGroupedLessons(lessons);
+    elements.resultCount.textContent = `${groups.size} 个上课日 · ${lessons.length} 条记录`;
+    elements.recordList.innerHTML = [...groups.entries()]
+      .map(([date, dayLessons]) => createDayCard(date, dayLessons))
+      .join("");
     elements.emptyState.hidden = lessons.length > 0;
   }
 
