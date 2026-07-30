@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="学生课后学习情况记录" />
+    <title>向上学习 · 学习记录</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header class="site-header">
+      <a class="brand" href="#top" aria-label="返回首页">
+        <span class="brand-mark" aria-hidden="true">向</span>
+        <span>
+          <strong>向上学习</strong>
+          <small>课后成长记录</small>
+        </span>
+      </a>
+      <span class="update-time" id="update-time">数据更新中</span>
+    </header>
+
+    <main id="top">
+      <section class="student-band" aria-labelledby="student-title">
+        <div class="student-intro">
+          <div class="avatar" id="student-avatar" aria-hidden="true">林</div>
+          <div>
+            <p class="eyebrow">学生学习档案</p>
+            <h1 id="student-title">林同学</h1>
+            <p class="student-meta" id="student-meta">初二 · 数学</p>
+          </div>
+        </div>
+        <p class="student-goal" id="student-goal">本阶段目标加载中</p>
+      </section>
+
+      <section class="summary" aria-label="学习概况">
+        <article class="metric">
+          <span>累计课程</span>
+          <strong id="lesson-count">0<small> 次</small></strong>
+        </article>
+        <article class="metric">
+          <span>最近上课</span>
+          <strong class="metric-date" id="latest-date">--</strong>
+        </article>
+        <article class="metric metric-progress">
+          <span>问题解决进度</span>
+          <strong id="average-progress">0<small>%</small></strong>
+          <div class="progress-track" aria-hidden="true">
+            <span id="average-progress-bar"></span>
+          </div>
+        </article>
+      </section>
+
+      <section class="records-section" aria-labelledby="records-heading">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">LESSON NOTES</p>
+            <h2 id="records-heading">课后记录</h2>
+          </div>
+          <span class="result-count" id="result-count"></span>
+        </div>
+
+        <div class="toolbar" aria-label="筛选课程记录">
+          <label class="search-box">
+            <span aria-hidden="true">⌕</span>
+            <span class="sr-only">搜索课程记录</span>
+            <input id="search-input" type="search" placeholder="搜索上课内容、问题或评价" />
+          </label>
+          <div class="subject-filters" id="subject-filters" aria-label="按科目筛选"></div>
+        </div>
+
+        <div class="record-list" id="record-list"></div>
+        <div class="empty-state" id="empty-state" hidden>
+          <strong>没有找到相关记录</strong>
+          <p>可以换一个关键词或筛选条件。</p>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <p>每一次复盘，都是下一次进步的起点。</p>
+      <span id="footer-name">向上学习</span>
+    </footer>
+
+    <script src="data.js"></script>
+    <script src="app.js"></script>
+  </body>
+</html>
