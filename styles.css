@@ -14,6 +14,8 @@
   --coral-soft: #f8eae5;
   --blue: #536f8c;
   --blue-soft: #eaf0f5;
+  --gold: #9a7745;
+  --gold-soft: #f4efe5;
   --weekend: #8a918e;
   --weekend-soft: #eef0ef;
   --shadow: 0 18px 50px rgba(26, 38, 33, 0.08);
@@ -240,53 +242,6 @@ h2 {
   overflow-wrap: anywhere;
   font-size: 13px;
   line-height: 1.75;
-}
-
-.summary {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  overflow: hidden;
-  border-radius: 7px;
-  background: var(--forest-deep);
-  box-shadow: var(--shadow);
-}
-
-.metric {
-  position: relative;
-  min-height: 112px;
-  padding: 23px 27px;
-  color: white;
-}
-
-.metric + .metric::before {
-  position: absolute;
-  top: 22px;
-  bottom: 22px;
-  left: 0;
-  width: 1px;
-  background: rgba(255, 255, 255, 0.13);
-  content: "";
-}
-
-.metric > span {
-  display: block;
-  margin-bottom: 7px;
-  color: rgba(255, 255, 255, 0.62);
-  font-size: 10px;
-}
-
-.metric strong {
-  display: block;
-  font-family: Georgia, "Times New Roman", serif;
-  font-size: 29px;
-  line-height: 1.25;
-}
-
-.metric small {
-  color: rgba(255, 255, 255, 0.58);
-  font-family: "Microsoft YaHei", "PingFang SC", sans-serif;
-  font-size: 11px;
-  font-weight: 500;
 }
 
 .calendar-section,
@@ -623,6 +578,7 @@ h2 {
 }
 
 .physics .subject-badge i { background: var(--blue); }
+.chemistry .subject-badge i { background: var(--gold); }
 
 .selected-lesson h4 {
   margin: 12px 0 16px;
@@ -648,6 +604,11 @@ h2 {
   background: var(--blue-soft);
 }
 
+.selected-lesson.chemistry dl > div {
+  border-left-color: var(--gold);
+  background: var(--gold-soft);
+}
+
 .selected-lesson dt {
   margin-bottom: 2px;
   color: var(--muted);
@@ -661,32 +622,43 @@ h2 {
   line-height: 1.65;
 }
 
-.progress-row {
-  display: flex;
-  min-width: 92px;
+.level-badge {
+  display: inline-flex;
+  min-width: 68px;
   align-items: center;
-  justify-content: flex-end;
-  gap: 7px;
-}
-
-.progress-track {
-  width: min(72px, 100%);
-  height: 4px;
-  overflow: hidden;
-  border-radius: 2px;
-  background: #dfe5e1;
-}
-
-.progress-track span {
-  display: block;
-  height: 100%;
-  border-radius: inherit;
-  background: var(--forest);
-}
-
-.progress-row strong {
-  color: var(--forest);
+  justify-content: center;
+  gap: 6px;
+  padding: 4px 8px;
+  border: 1px solid var(--line);
+  border-radius: 5px;
+  background: #f5f7f5;
+  color: var(--muted);
   font-size: 9px;
+  line-height: 1.2;
+}
+
+.level-badge strong {
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 16px;
+  line-height: 1;
+}
+
+.level-badge.level-a {
+  border-color: #b7d4c7;
+  background: var(--forest-soft);
+  color: var(--forest);
+}
+
+.level-badge.level-b {
+  border-color: #c1d0df;
+  background: var(--blue-soft);
+  color: var(--blue);
+}
+
+.level-badge.level-c {
+  border-color: #e2c2b8;
+  background: var(--coral-soft);
+  color: #9d4c37;
 }
 
 .no-lesson-state {
@@ -830,6 +802,11 @@ h2 {
   background: var(--blue-soft);
 }
 
+.archive-entry.chemistry p {
+  border-left-color: var(--gold);
+  background: var(--gold-soft);
+}
+
 .archive-entry p > span:first-child {
   display: block;
   margin-bottom: 2px;
@@ -916,16 +893,6 @@ footer strong { color: var(--ink); }
 
   h1 {
     font-size: 29px;
-  }
-
-  .summary {
-    grid-template-columns: repeat(2, 1fr);
-  }
-
-  .metric:nth-child(3)::before { display: none; }
-
-  .metric:nth-child(n + 3) {
-    border-top: 1px solid rgba(255, 255, 255, 0.13);
   }
 
   .calendar-section,
@@ -1040,19 +1007,6 @@ footer strong { color: var(--ink); }
   .profile-meta span + span::before { display: none; }
 
   .goal-block { padding-left: 17px; }
-
-  .summary {
-    grid-template-columns: 1fr 1fr;
-  }
-
-  .metric {
-    min-height: 97px;
-    padding: 18px;
-  }
-
-  .metric strong { font-size: 25px; }
-
-  .metric:nth-child(odd)::before { display: none; }
 
   .calendar-month-heading span { display: none; }
 

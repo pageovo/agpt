@@ -7,7 +7,7 @@ window.LEARNING_DATA = {
   student: {
     name: "杜同学",
     grade: "初二升初三",
-    subjects: ["数学", "物理"],
+    subjects: ["数学", "物理", "化学"],
     startDate: "2026-07-15",
     goal: "暑期衔接阶段：巩固特殊平行四边形，掌握一元二次方程；建立热学知识体系并提高综合计算能力。",
   },

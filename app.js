@@ -32,12 +32,7 @@
     studentTitle: document.querySelector("#student-title"),
     studentGrade: document.querySelector("#student-grade"),
     studentSubjects: document.querySelector("#student-subjects"),
-    studentStart: document.querySelector("#student-start"),
     studentGoal: document.querySelector("#student-goal"),
-    studyDayCount: document.querySelector("#study-day-count"),
-    lessonCount: document.querySelector("#lesson-count"),
-    weekCount: document.querySelector("#week-count"),
-    averageProgress: document.querySelector("#average-progress"),
     monthSwitch: document.querySelector("#month-switch"),
     calendarMonthLabel: document.querySelector("#calendar-month-label"),
     calendarMonthSummary: document.querySelector("#calendar-month-summary"),
@@ -111,19 +106,6 @@
   }
 
   function initializeProfile() {
-    const uniqueDates = [...lessonsByDate.keys()];
-    const validProgress = sortedLessons.map((lesson) => getProgress(lesson.progress)).filter((value) => value !== null);
-    const average = validProgress.length
-      ? Math.round(validProgress.reduce((total, value) => total + value, 0) / validProgress.length)
-      : null;
-    const weekStart = new Date(snapshotDate);
-    const day = weekStart.getDay() || 7;
-    weekStart.setDate(weekStart.getDate() - day + 1);
-    const weekCount = uniqueDates.filter((dateString) => {
-      const date = parseDate(dateString);
-      return date >= weekStart && date <= snapshotDate;
-    }).length;
-
     document.title = `${data.student.name} · 暑期学习记录`;
     elements.brandName.textContent = data.siteName;
     elements.updateTime.textContent = `更新于 ${formatDate(data.lastUpdated)}`;
@@ -132,12 +114,7 @@
     elements.studentTitle.textContent = `${data.student.name}的学习记录`;
     elements.studentGrade.textContent = data.student.grade;
     elements.studentSubjects.textContent = data.student.subjects.join(" · ");
-    elements.studentStart.textContent = `${formatDate(data.student.startDate)}开始`;
     elements.studentGoal.textContent = data.student.goal;
-    elements.studyDayCount.innerHTML = `${uniqueDates.length}<small> 天</small>`;
-    elements.lessonCount.innerHTML = `${sortedLessons.length}<small> 节</small>`;
-    elements.weekCount.innerHTML = `${weekCount}<small> 天</small>`;
-    elements.averageProgress.innerHTML = average === null ? "待填写" : `${average}<small>%</small>`;
     elements.footerName.textContent = data.siteName;
   }
 
@@ -174,13 +151,14 @@
     const firstDate = new Date(year, month, 1);
     const daysInMonth = new Date(year, month + 1, 0).getDate();
     const leadingCells = (firstDate.getDay() + 6) % 7;
-    const attendedDays = [...lessonsByDate.keys()].filter((dateString) => {
-      const date = parseDate(dateString);
+    const monthLessons = sortedLessons.filter((lesson) => {
+      const date = parseDate(lesson.date);
       return date.getFullYear() === year && date.getMonth() === month;
-    }).length;
+    });
+    const attendedDays = new Set(monthLessons.map((lesson) => lesson.date)).size;
 
     elements.calendarMonthLabel.textContent = `${year}年${month + 1}月`;
-    elements.calendarMonthSummary.textContent = `${attendedDays} 个上课日 · ${attendedDays * data.student.subjects.length} 节记录`;
+    elements.calendarMonthSummary.textContent = `${attendedDays} 个上课日 · ${monthLessons.length} 节记录`;
     elements.monthSwitch.querySelectorAll("button").forEach((button, index) => {
       button.classList.toggle("active", index === state.monthIndex);
       button.setAttribute("aria-pressed", String(index === state.monthIndex));
@@ -220,24 +198,32 @@
     };
   }
 
-  function createProgress(progressValue) {
+  function getLevel(progressValue) {
     const progress = getProgress(progressValue);
-    if (progress === null) return '<span class="pending-value">待填写</span>';
+    if (progress === null) return null;
+    if (progress >= 85) return { grade: "A", label: "熟练掌握", className: "level-a" };
+    if (progress >= 70) return { grade: "B", label: "基本掌握", className: "level-b" };
+    return { grade: "C", label: "需要巩固", className: "level-c" };
+  }
+
+  function createLevel(progressValue) {
+    const level = getLevel(progressValue);
+    if (!level) return '<span class="pending-value">待填写</span>';
     return `
-      <div class="progress-row">
-        <div class="progress-track" aria-hidden="true"><span style="width:${progress}%"></span></div>
-        <strong>${progress}%</strong>
-      </div>
+      <span class="level-badge ${level.className}" title="${level.label}">
+        <strong>${level.grade}</strong>
+        <span>${level.label}</span>
+      </span>
     `;
   }
 
   function createSelectedLesson(lesson) {
-    const subjectClass = lesson.subject === "物理" ? "physics" : "math";
+    const subjectClass = lesson.subject === "物理" ? "physics" : lesson.subject === "化学" ? "chemistry" : "math";
     return `
       <article class="selected-lesson ${subjectClass}">
         <div class="selected-subject-row">
           <span class="subject-badge"><i></i>${escapeHtml(lesson.subject)}</span>
-          ${createProgress(lesson.progress)}
+          ${createLevel(lesson.progress)}
         </div>
         <h4>${isPending(lesson.content) ? '<span class="pending-value">待填写课程内容</span>' : escapeHtml(lesson.content)}</h4>
         <dl>
@@ -290,8 +276,8 @@
         </header>
         <div class="archive-lessons">
           ${lessons.map((lesson) => `
-            <section class="archive-entry ${lesson.subject === "物理" ? "physics" : "math"}">
-              <div class="archive-subject"><span class="subject-badge"><i></i>${escapeHtml(lesson.subject)}</span>${createProgress(lesson.progress)}</div>
+            <section class="archive-entry ${lesson.subject === "物理" ? "physics" : lesson.subject === "化学" ? "chemistry" : "math"}">
+              <div class="archive-subject"><span class="subject-badge"><i></i>${escapeHtml(lesson.subject)}</span>${createLevel(lesson.progress)}</div>
               <h3>${isPending(lesson.content) ? '<span class="pending-value">待填写课程内容</span>' : escapeHtml(lesson.content)}</h3>
               <p><span>课堂观察</span>${isPending(lesson.evaluation) ? '<span class="pending-value">待填写</span>' : escapeHtml(lesson.evaluation)}</p>
             </section>
