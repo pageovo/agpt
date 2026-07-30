@@ -177,6 +177,16 @@ main {
   min-width: 0;
 }
 
+.eyebrow,
+.day-panel-header .eyebrow {
+  margin: 0 0 4px;
+  color: var(--muted);
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  line-height: 1.4;
+}
+
 h1,
 h2,
 h3,
@@ -306,7 +316,7 @@ h2 {
   background: var(--weekend);
 }
 
-.legend-dot.attended { background: var(--forest); }
+.legend-dot.attended { background: var(--success); }
 .legend-dot.missed { background: var(--coral); }
 
 .calendar-workspace {
@@ -320,8 +330,9 @@ h2 {
 .day-panel {
   min-width: 0;
   border: 1px solid var(--line);
-  border-radius: 7px;
+  border-radius: 8px;
   background: var(--surface);
+  box-shadow: var(--shadow);
 }
 
 .calendar-panel {
@@ -373,9 +384,9 @@ h2 {
   flex-direction: column;
   padding: 9px;
   border: 1px solid transparent;
-  border-radius: 5px;
+  border-radius: 8px;
   outline: 0;
-  background: #f4f6f4;
+  background: #f5f5f7;
   cursor: pointer;
   text-align: left;
   transition: border-color 150ms ease, box-shadow 150ms ease, transform 150ms ease;
@@ -387,7 +398,7 @@ h2 {
 }
 
 .calendar-cell:focus-visible {
-  box-shadow: 0 0 0 3px rgba(31, 81, 68, 0.18);
+  box-shadow: 0 0 0 3px rgba(0, 113, 227, 0.18);
 }
 
 .calendar-cell.empty {
@@ -397,7 +408,7 @@ h2 {
 
 .calendar-cell .cell-day {
   color: var(--ink);
-  font-family: Georgia, "Times New Roman", serif;
+  font-variant-numeric: tabular-nums;
   font-size: 15px;
   font-weight: 700;
   line-height: 1;
@@ -414,12 +425,12 @@ h2 {
 }
 
 .calendar-cell.attended {
-  background: var(--forest-soft);
+  background: var(--success-soft);
 }
 
 .calendar-cell.attended .cell-day,
 .calendar-cell.attended .cell-label {
-  color: var(--forest);
+  color: #167b3b;
 }
 
 .calendar-cell.attended::after,
@@ -431,7 +442,7 @@ h2 {
   width: 5px;
   height: 5px;
   border-radius: 50%;
-  background: var(--forest);
+  background: var(--success);
   content: "";
 }
 
@@ -505,8 +516,8 @@ h2 {
   flex: 0 0 auto;
   padding: 3px 8px;
   border-radius: 4px;
-  background: var(--forest-soft);
-  color: var(--forest);
+  background: var(--success-soft);
+  color: #167b3b;
   font-size: 9px;
   font-weight: 800;
 }
@@ -559,7 +570,7 @@ h2 {
 .selected-lesson h4 {
   margin: 12px 0 16px;
   overflow-wrap: anywhere;
-  font-size: 13px;
+  font-size: 14px;
   line-height: 1.65;
 }
 
@@ -614,15 +625,16 @@ h2 {
 }
 
 .level-badge strong {
-  font-family: Georgia, "Times New Roman", serif;
+  font-family: inherit;
+  font-variant-numeric: tabular-nums;
   font-size: 16px;
   line-height: 1;
 }
 
 .level-badge.level-a {
   border-color: #b7d4c7;
-  background: var(--forest-soft);
-  color: var(--forest);
+  background: var(--success-soft);
+  color: #167b3b;
 }
 
 .level-badge.level-b {
@@ -656,7 +668,7 @@ h2 {
   border: 1px solid #dcc4bb;
   border-radius: 50%;
   color: var(--coral);
-  font-family: Georgia, "Times New Roman", serif;
+  font-family: inherit;
   font-size: 17px;
 }
 
@@ -701,8 +713,9 @@ h2 {
   grid-template-columns: 118px minmax(0, 1fr);
   overflow: hidden;
   border: 1px solid var(--line);
-  border-radius: 7px;
+  border-radius: 8px;
   background: var(--surface);
+  box-shadow: var(--shadow);
 }
 
 .archive-day > header {
@@ -712,7 +725,7 @@ h2 {
   justify-content: space-between;
   flex-direction: column;
   border-right: 1px solid var(--line);
-  background: #f7f8f7;
+  background: #f5f5f7;
 }
 
 .archive-day time strong,
@@ -722,7 +735,7 @@ h2 {
 
 .archive-day time strong {
   color: var(--forest);
-  font-family: Georgia, "Times New Roman", serif;
+  font-variant-numeric: tabular-nums;
   font-size: 31px;
   line-height: 1;
 }
@@ -810,15 +823,6 @@ footer div {
 footer strong { color: var(--ink); }
 
 @media (max-width: 980px) {
-  .profile-section {
-    grid-template-columns: 1fr;
-    gap: 25px;
-  }
-
-  .goal-block {
-    max-width: 720px;
-  }
-
   .calendar-workspace {
     grid-template-columns: 1fr;
   }
@@ -981,8 +985,6 @@ footer strong { color: var(--ink); }
   }
 
   .profile-meta span + span::before { display: none; }
-
-  .goal-block { padding-left: 17px; }
 
   .calendar-month-heading span { display: none; }
 
