@@ -11,7 +11,7 @@
     { year: 2026, month: 6 },
     { year: 2026, month: 7 },
   ];
-  const SCHOOL_START_DATE = "2026-09-01";
+  const SCHOOL_START_DATE = "2026-08-31";
 
   const WEEKDAY_EN = ["SUNDAY", "MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY", "FRIDAY", "SATURDAY"];
   const state = { monthIndex: 0, selectedDate: data.lastUpdated };
@@ -32,7 +32,6 @@
     studentTitle: document.querySelector("#student-title"),
     studentGrade: document.querySelector("#student-grade"),
     studentSubjects: document.querySelector("#student-subjects"),
-    studentGoal: document.querySelector("#student-goal"),
     monthSwitch: document.querySelector("#month-switch"),
     calendarMonthLabel: document.querySelector("#calendar-month-label"),
     calendarMonthSummary: document.querySelector("#calendar-month-summary"),
@@ -114,7 +113,6 @@
     elements.studentTitle.textContent = `${data.student.name}的学习记录`;
     elements.studentGrade.textContent = data.student.grade;
     elements.studentSubjects.textContent = data.student.subjects.join(" · ");
-    elements.studentGoal.textContent = data.student.goal;
     elements.footerName.textContent = data.siteName;
   }
 
