@@ -29,6 +29,7 @@
     brandName: document.querySelector("#brand-name"),
     updateTime: document.querySelector("#update-time"),
     countdownValue: document.querySelector("#countdown-value"),
+    countdownDate: document.querySelector("#countdown-date"),
     studentTitle: document.querySelector("#student-title"),
     studentGrade: document.querySelector("#student-grade"),
     studentSubjects: document.querySelector("#student-subjects"),
@@ -110,6 +111,7 @@
     elements.updateTime.textContent = `更新于 ${formatDate(data.lastUpdated)}`;
     const countdownDays = Math.ceil((parseDate(SCHOOL_START_DATE) - snapshotDate) / 86400000);
     elements.countdownValue.textContent = countdownDays > 0 ? `${countdownDays}天` : "已开学";
+    elements.countdownDate.textContent = formatDate(SCHOOL_START_DATE);
     elements.studentTitle.textContent = `${data.student.name}的学习记录`;
     elements.studentGrade.textContent = data.student.grade;
     elements.studentSubjects.textContent = data.student.subjects.join(" · ");
@@ -225,8 +227,8 @@
         </div>
         <h4>${isPending(lesson.content) ? '<span class="pending-value">待填写课程内容</span>' : escapeHtml(lesson.content)}</h4>
         <dl>
-          <div><dt>需要巩固</dt><dd>${isPending(lesson.problem) ? '<span class="pending-value">待填写</span>' : escapeHtml(lesson.problem)}</dd></div>
-          <div><dt>老师评价</dt><dd>${isPending(lesson.evaluation) ? '<span class="pending-value">待填写</span>' : escapeHtml(lesson.evaluation)}</dd></div>
+          <div class="lesson-note observation"><dt>课堂观察</dt><dd>${isPending(lesson.evaluation) ? '<span class="pending-value">待填写</span>' : escapeHtml(lesson.evaluation)}</dd></div>
+          <div class="lesson-note homework"><dt>课后作业</dt><dd>${isPending(lesson.homework) ? '<span class="pending-value">待填写</span>' : escapeHtml(lesson.homework)}</dd></div>
         </dl>
       </article>
     `;
@@ -277,7 +279,8 @@
             <section class="archive-entry ${lesson.subject === "物理" ? "physics" : lesson.subject === "化学" ? "chemistry" : "math"}">
               <div class="archive-subject"><span class="subject-badge"><i></i>${escapeHtml(lesson.subject)}</span>${createLevel(lesson.progress)}</div>
               <h3>${isPending(lesson.content) ? '<span class="pending-value">待填写课程内容</span>' : escapeHtml(lesson.content)}</h3>
-              <p><span>课堂观察</span>${isPending(lesson.evaluation) ? '<span class="pending-value">待填写</span>' : escapeHtml(lesson.evaluation)}</p>
+              <p class="lesson-note observation"><span>课堂观察</span>${isPending(lesson.evaluation) ? '<span class="pending-value">待填写</span>' : escapeHtml(lesson.evaluation)}</p>
+              <p class="lesson-note homework"><span>课后作业</span>${isPending(lesson.homework) ? '<span class="pending-value">待填写</span>' : escapeHtml(lesson.homework)}</p>
             </section>
           `).join("")}
         </div>

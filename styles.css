@@ -14,10 +14,16 @@
   --success-soft: #e9f8ed;
   --coral: #ff3b30;
   --coral-soft: #fff1f0;
-  --blue: #0071e3;
-  --blue-soft: #eef6ff;
-  --gold: #a06a00;
-  --gold-soft: #fff7e6;
+  --math: #0071e3;
+  --math-soft: #eef6ff;
+  --physics: #7a43b6;
+  --physics-soft: #f4edff;
+  --chemistry: #d99a00;
+  --chemistry-soft: #fff7e6;
+  --blue: var(--math);
+  --blue-soft: var(--math-soft);
+  --gold: var(--chemistry);
+  --gold-soft: var(--chemistry-soft);
   --weekend: #86868b;
   --weekend-soft: #eeeeF0;
   --shadow: 0 12px 32px rgba(0, 0, 0, 0.055);
@@ -169,7 +175,7 @@ main {
 
 .profile-section {
   display: block;
-  padding: 50px 0 32px;
+  padding: 50px 0 0;
 }
 
 .profile-copy,
@@ -561,11 +567,11 @@ h2 {
   width: 7px;
   height: 7px;
   border-radius: 2px;
-  background: var(--coral);
+  background: var(--math);
 }
 
-.physics .subject-badge i { background: var(--blue); }
-.chemistry .subject-badge i { background: var(--gold); }
+.physics .subject-badge i { background: var(--physics); }
+.chemistry .subject-badge i { background: var(--chemistry); }
 
 .selected-lesson h4 {
   margin: 12px 0 16px;
@@ -582,18 +588,19 @@ h2 {
 
 .selected-lesson dl > div {
   padding: 10px 12px;
-  border-left: 2px solid var(--coral);
-  background: var(--coral-soft);
+  border-left: 2px solid var(--math);
+  border-radius: 6px;
+  background: var(--math-soft);
 }
 
 .selected-lesson.physics dl > div {
-  border-left-color: var(--blue);
-  background: var(--blue-soft);
+  border-left-color: var(--physics);
+  background: var(--physics-soft);
 }
 
 .selected-lesson.chemistry dl > div {
-  border-left-color: var(--gold);
-  background: var(--gold-soft);
+  border-left-color: var(--chemistry);
+  background: var(--chemistry-soft);
 }
 
 .selected-lesson dt {
@@ -778,22 +785,28 @@ h2 {
 }
 
 .archive-entry p {
+  margin-top: 0;
   margin-bottom: 0;
   padding: 11px 13px;
-  border-left: 2px solid var(--coral);
-  background: var(--coral-soft);
+  border-left: 2px solid var(--math);
+  border-radius: 6px;
+  background: var(--math-soft);
   overflow-wrap: anywhere;
   font-size: 10px;
 }
 
+.archive-entry .lesson-note + .lesson-note {
+  margin-top: 8px;
+}
+
 .archive-entry.physics p {
-  border-left-color: var(--blue);
-  background: var(--blue-soft);
+  border-left-color: var(--physics);
+  background: var(--physics-soft);
 }
 
 .archive-entry.chemistry p {
-  border-left-color: var(--gold);
-  background: var(--gold-soft);
+  border-left-color: var(--chemistry);
+  background: var(--chemistry-soft);
 }
 
 .archive-entry p > span:first-child {
@@ -867,18 +880,14 @@ footer strong { color: var(--ink); }
     width: min(1200px, calc(100% - 28px));
   }
 
-  .profile-section {
-    padding-top: 37px;
-  }
+  .profile-section { padding-top: 37px; }
 
   h1 {
     font-size: 29px;
   }
 
-  .calendar-section,
-  .records-section {
-    padding-top: 46px;
-  }
+  .calendar-section { padding-top: 16px; }
+  .records-section { padding-top: 46px; }
 
   .calendar-title-row {
     align-items: flex-start;
@@ -968,9 +977,12 @@ footer strong { color: var(--ink); }
 @media (max-width: 560px) {
   .brand small { display: none; }
 
-  .header-tools { gap: 12px; }
+  .header-inner { gap: 12px; }
+  .header-tools,
+  .countdown { gap: 4px; }
 
-  .countdown-date { display: none; }
+  .countdown-label,
+  .countdown-date { font-size: 9px; }
 
   .update-status {
     min-width: 0;
@@ -1014,6 +1026,10 @@ footer strong { color: var(--ink); }
     flex-direction: column;
     gap: 4px;
   }
+}
+
+@media (max-width: 400px) {
+  .update-status { max-width: 70px; }
 }
 
 @media (prefers-reduced-motion: reduce) {
