@@ -18,9 +18,16 @@
             <small>暑期学习档案</small>
           </span>
         </a>
-        <div class="update-status">
-          <span class="status-dot" aria-hidden="true"></span>
-          <span id="update-time">数据更新中</span>
+        <div class="header-tools">
+          <div class="countdown" aria-label="暑假开学倒计时">
+            <span class="countdown-label">距开学</span>
+            <strong id="countdown-value">--</strong>
+            <span class="countdown-date">9月1日</span>
+          </div>
+          <div class="update-status">
+            <span class="status-dot" aria-hidden="true"></span>
+            <span id="update-time">数据更新中</span>
+          </div>
         </div>
       </div>
     </header>
@@ -69,10 +76,6 @@
           </div>
           <div class="calendar-actions">
             <div class="month-switch" id="month-switch" aria-label="切换月份"></div>
-            <div class="arrow-actions">
-              <button id="previous-month" type="button" aria-label="上一个月" title="上一个月">←</button>
-              <button id="next-month" type="button" aria-label="下一个月" title="下一个月">→</button>
-            </div>
           </div>
         </div>
 
@@ -92,7 +95,6 @@
               <span>一</span><span>二</span><span>三</span><span>四</span><span>五</span><span>六</span><span>日</span>
             </div>
             <div class="calendar-grid" id="calendar-grid" role="grid" aria-label="课程日期"></div>
-            <p class="swipe-hint">左右滑动切换月份</p>
           </div>
 
           <aside class="day-panel" id="day-panel" aria-live="polite">

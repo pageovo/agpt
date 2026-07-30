@@ -11,6 +11,7 @@
     { year: 2026, month: 6 },
     { year: 2026, month: 7 },
   ];
+  const SCHOOL_START_DATE = "2026-09-01";
 
   const WEEKDAY_EN = ["SUNDAY", "MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY", "FRIDAY", "SATURDAY"];
   const state = { monthIndex: 0, selectedDate: data.lastUpdated };
@@ -27,6 +28,7 @@
   const elements = {
     brandName: document.querySelector("#brand-name"),
     updateTime: document.querySelector("#update-time"),
+    countdownValue: document.querySelector("#countdown-value"),
     studentTitle: document.querySelector("#student-title"),
     studentGrade: document.querySelector("#student-grade"),
     studentSubjects: document.querySelector("#student-subjects"),
@@ -37,9 +39,6 @@
     weekCount: document.querySelector("#week-count"),
     averageProgress: document.querySelector("#average-progress"),
     monthSwitch: document.querySelector("#month-switch"),
-    previousMonth: document.querySelector("#previous-month"),
-    nextMonth: document.querySelector("#next-month"),
-    calendarPanel: document.querySelector("#calendar-panel"),
     calendarMonthLabel: document.querySelector("#calendar-month-label"),
     calendarMonthSummary: document.querySelector("#calendar-month-summary"),
     calendarGrid: document.querySelector("#calendar-grid"),
@@ -128,6 +127,8 @@
     document.title = `${data.student.name} · 暑期学习记录`;
     elements.brandName.textContent = data.siteName;
     elements.updateTime.textContent = `更新于 ${formatDate(data.lastUpdated)}`;
+    const countdownDays = Math.ceil((parseDate(SCHOOL_START_DATE) - snapshotDate) / 86400000);
+    elements.countdownValue.textContent = countdownDays > 0 ? `${countdownDays}天` : "已开学";
     elements.studentTitle.textContent = `${data.student.name}的学习记录`;
     elements.studentGrade.textContent = data.student.grade;
     elements.studentSubjects.textContent = data.student.subjects.join(" · ");
@@ -149,18 +150,6 @@
       if (!button) return;
       showMonth(Number(button.dataset.monthIndex));
     });
-    elements.previousMonth.addEventListener("click", () => showMonth(state.monthIndex - 1));
-    elements.nextMonth.addEventListener("click", () => showMonth(state.monthIndex + 1));
-
-    let touchStartX = 0;
-    elements.calendarPanel.addEventListener("touchstart", (event) => {
-      touchStartX = event.changedTouches[0].clientX;
-    }, { passive: true });
-    elements.calendarPanel.addEventListener("touchend", (event) => {
-      const distance = event.changedTouches[0].clientX - touchStartX;
-      if (Math.abs(distance) < 45) return;
-      showMonth(state.monthIndex + (distance < 0 ? 1 : -1));
-    }, { passive: true });
   }
 
   function showMonth(index) {

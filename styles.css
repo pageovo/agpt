@@ -127,6 +127,31 @@ main {
   white-space: nowrap;
 }
 
+.header-tools {
+  display: flex;
+  align-items: center;
+  gap: 22px;
+}
+
+.countdown {
+  display: flex;
+  align-items: baseline;
+  gap: 7px;
+  color: var(--coral);
+}
+
+.countdown-label,
+.countdown-date {
+  color: var(--muted);
+  font-size: 10px;
+}
+
+.countdown strong {
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 19px;
+  line-height: 1;
+}
+
 .status-dot {
   width: 7px;
   height: 7px;
@@ -309,12 +334,6 @@ h2 {
   font-weight: 800;
 }
 
-.arrow-actions {
-  display: flex;
-  gap: 5px;
-}
-
-.arrow-actions button,
 .archive-day > header button {
   display: grid;
   width: 38px;
@@ -328,7 +347,6 @@ h2 {
   line-height: 1;
 }
 
-.arrow-actions button:hover,
 .archive-day > header button:hover {
   border-color: var(--line-strong);
   color: var(--forest);
@@ -377,7 +395,6 @@ h2 {
 
 .calendar-panel {
   padding: 24px;
-  touch-action: pan-y;
 }
 
 .calendar-month-heading {
@@ -532,14 +549,6 @@ h2 {
   border-radius: 50%;
   background: currentColor;
   content: "";
-}
-
-.swipe-hint {
-  display: none;
-  margin: 13px 0 -4px;
-  color: var(--faint);
-  font-size: 9px;
-  text-align: center;
 }
 
 .day-panel {
@@ -967,8 +976,6 @@ footer strong { color: var(--ink); }
     height: 4px;
   }
 
-  .swipe-hint { display: block; }
-
   .day-panel {
     display: block;
   }
@@ -1013,6 +1020,10 @@ footer strong { color: var(--ink); }
 
 @media (max-width: 560px) {
   .brand small { display: none; }
+
+  .header-tools { gap: 12px; }
+
+  .countdown-date { display: none; }
 
   .update-status {
     min-width: 0;
