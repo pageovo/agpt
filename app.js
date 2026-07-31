@@ -198,21 +198,23 @@
     };
   }
 
-  function getLevel(progressValue) {
-    const progress = getProgress(progressValue);
-    if (progress === null) return null;
-    if (progress >= 85) return { grade: "A", label: "熟练掌握", className: "level-a" };
-    if (progress >= 70) return { grade: "B", label: "基本掌握", className: "level-b" };
-    return { grade: "C", label: "需要巩固", className: "level-c" };
+  function getScoreLevel(progressValue) {
+    const score = getProgress(progressValue);
+    if (score === null) return null;
+    if (score >= 90) return { score, label: "优秀", className: "score-excellent" };
+    if (score >= 80) return { score, label: "良好", className: "score-good" };
+    if (score >= 60) return { score, label: "合格", className: "score-pass" };
+    return { score, label: "待提高", className: "score-needs-work" };
   }
 
-  function createLevel(progressValue) {
-    const level = getLevel(progressValue);
+  function createScore(progressValue) {
+    const level = getScoreLevel(progressValue);
     if (!level) return '<span class="pending-value">待填写</span>';
+    const score = Math.round(level.score);
     return `
-      <span class="level-badge ${level.className}" title="${level.label}">
-        <strong>${level.grade}</strong>
-        <span>${level.label}</span>
+      <span class="score-ring ${level.className}" style="--score: ${level.score}" role="img"
+        aria-label="评分 ${score} 分，${level.label}" title="${score} 分 · ${level.label}">
+        <strong>${score}</strong>
       </span>
     `;
   }
@@ -223,7 +225,7 @@
       <article class="selected-lesson ${subjectClass}">
         <div class="selected-subject-row">
           <span class="subject-badge"><i></i>${escapeHtml(lesson.subject)}</span>
-          ${createLevel(lesson.progress)}
+          ${createScore(lesson.progress)}
         </div>
         <h4>${isPending(lesson.content) ? '<span class="pending-value">待填写课程内容</span>' : escapeHtml(lesson.content)}</h4>
         <dl>
@@ -277,7 +279,7 @@
         <div class="archive-lessons">
           ${lessons.map((lesson) => `
             <section class="archive-entry ${lesson.subject === "物理" ? "physics" : lesson.subject === "化学" ? "chemistry" : "math"}">
-              <div class="archive-subject"><span class="subject-badge"><i></i>${escapeHtml(lesson.subject)}</span>${createLevel(lesson.progress)}</div>
+              <div class="archive-subject"><span class="subject-badge"><i></i>${escapeHtml(lesson.subject)}</span>${createScore(lesson.progress)}</div>
               <h3>${isPending(lesson.content) ? '<span class="pending-value">待填写课程内容</span>' : escapeHtml(lesson.content)}</h3>
               <p class="lesson-note observation"><span>课堂观察</span>${isPending(lesson.evaluation) ? '<span class="pending-value">待填写</span>' : escapeHtml(lesson.evaluation)}</p>
               <p class="lesson-note homework"><span>课后作业</span>${isPending(lesson.homework) ? '<span class="pending-value">待填写</span>' : escapeHtml(lesson.homework)}</p>

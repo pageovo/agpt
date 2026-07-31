@@ -616,45 +616,42 @@ h2 {
   line-height: 1.65;
 }
 
-.level-badge {
-  display: inline-flex;
-  min-width: 68px;
-  align-items: center;
-  justify-content: center;
-  gap: 6px;
-  padding: 4px 8px;
-  border: 1px solid var(--line);
-  border-radius: 5px;
-  background: #f5f7f5;
-  color: var(--muted);
-  font-size: 9px;
-  line-height: 1.2;
+.score-ring {
+  --score-color: var(--muted);
+  position: relative;
+  display: grid;
+  width: 52px;
+  height: 52px;
+  flex: 0 0 52px;
+  place-items: center;
+  border-radius: 50%;
+  background: conic-gradient(var(--score-color) calc(var(--score) * 1%), #e5e5ea 0);
+  color: var(--score-color);
+  isolation: isolate;
 }
 
-.level-badge strong {
-  font-family: inherit;
+.score-ring::before {
+  position: absolute;
+  z-index: -1;
+  width: 40px;
+  height: 40px;
+  border-radius: inherit;
+  background: var(--surface);
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.035);
+  content: "";
+}
+
+.score-ring strong {
   font-variant-numeric: tabular-nums;
-  font-size: 16px;
+  font-size: 17px;
+  font-weight: 700;
   line-height: 1;
 }
 
-.level-badge.level-a {
-  border-color: #b7d4c7;
-  background: var(--success-soft);
-  color: #167b3b;
-}
-
-.level-badge.level-b {
-  border-color: #c1d0df;
-  background: var(--blue-soft);
-  color: var(--blue);
-}
-
-.level-badge.level-c {
-  border-color: #e2c2b8;
-  background: var(--coral-soft);
-  color: #9d4c37;
-}
+.score-ring.score-excellent { --score-color: #1f9d4c; }
+.score-ring.score-good { --score-color: #0071e3; }
+.score-ring.score-pass { --score-color: #d17b00; }
+.score-ring.score-needs-work { --score-color: #e43b32; }
 
 .no-lesson-state {
   display: flex;
@@ -1002,6 +999,8 @@ footer strong { color: var(--ink); }
 
   .calendar-cell {
     min-height: 48px;
+    width: 100%;
+    aspect-ratio: auto;
   }
 
   .calendar-cell .cell-day { font-size: 13px; }
